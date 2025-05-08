@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	
+	    <flow name="get:\vitals\(id):emergency-response-system-api-config">
+        <logger level="INFO" doc:name="INFO" doc:id="0ec8c122-c493-482d-879b-22dd6d4dd948" message="hello world"/>
+		<ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  id: 4321,
+  emergencyResponseId: 50,
+  patientId: 52525,
+  recorded: "2025-04-22T16:16:11.37233Z",
+  source: "tablet",
+  vitals: {
+    heartRate: 93,
+    bloodPressure: {
+      systolic: 126,
+      diastolic: 70
+    },
+    bloodOxygen: 99.3,
+    temperature: 36.8,
+    respiratoryRate: 14
+  }
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="post:\vitals:application\json:emergency-response-system-api-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  id: 23456,
+  emergencyResponseId: 50,
+  patientId: 52525,
+  recorded: "2025-04-22T16:16:11.37233Z",
+  source: "tablet"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<db:insert doc:name="Insert" doc:id="3553cecb-96c9-4aa1-bfc8-0428b39ba1ad" config-ref="Database_Config">
+			<db:sql><![CDATA[INSERT INTO vital_signs (
+    er_id,
+    recorded_at,
+    heart_rate,
+    blood_pressure_systolic,
+    blood_pressure_diastolic,
+    blood_oxygen,
+    temperature,
+    respiratory_rate,
+    source,
+    device_id,
+    connectivity_type,
+    notes,
+    created_at
+  )
+VALUES (
+  	:er_id,
+    :recorded_at,
+    :heart_rate,
+    ::blood_pressure_systolic,
+    :blood_pressure_diastolic,
+    :blood_oxygen,
+    :temperature,
+    :respiratory_rate,
+    :source,
+    :device_id,
+    :connectivity_type,
+    :notes,
+    :created_at
+  );]]></db:sql>
+		</db:insert>
+    
+</flow>
+	</mule>

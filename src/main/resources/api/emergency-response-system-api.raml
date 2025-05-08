@@ -1,0 +1,145 @@
+#%RAML 1.0
+title: Emergency Response System API
+
+# TO DO:
+# - add emergency response ID
+# - change vital ID from guid to integer
+
+# - notes
+# - source should be medical device or manual
+# - some way to identify the patient's device
+# - how to record connectivity type (cellular, bluetooth, wi-fi)
+
+types:
+  PatientRecording:
+    type: object
+    properties:
+      id:
+        type: integer
+        required: false
+        example: 12345
+      emergencyResponseId:
+        type: integer
+        required: true
+        example: 50
+      patientId:
+        type: integer
+        example: 52525
+      recorded:
+        type: datetime
+        example: 2025-04-22T10:29:00-05:00
+      source:
+        type: string
+        enum: [manual, tablet]
+  Vitals:
+    type: object
+    properties:
+      heartRate:
+        type: integer
+        example: 93
+        minimum: 0
+      bloodPressure:
+        type: object
+        properties:
+          systolic:
+            type: integer
+            example: 126
+            description: Systolic blood pressure in mmHg
+            minimum: 0
+          diastolic:
+            type: integer
+            example: 70
+            description: Diastolic blood pressure in mmHg
+            minimum: 0
+      bloodOxygen:
+        type: number
+        format: float
+        description: Blood oxygen saturation as a percentage
+        example: 98.2
+        minimum: 0
+      temperature:
+        type: number
+        format: float
+        description: Body temperature in degrees Celsius
+        example: 36.7
+        minimum: 0
+      respiratoryRate:
+        type: integer
+        description: Respiratory rate in breaths per minute
+        example: 15
+
+/vitals:
+  post:
+    displayName: Record Vitals
+    description: Record new vital signs for an emergency response
+    body:
+      application/json:
+        type: PatientRecording
+        properties:
+          vitals: Vitals
+        example:
+          emergencyResponseId: 50
+          patientId: 52525
+          recorded: 2025-04-22T16:16:11.37233Z
+          source: tablet
+          vitals:
+            heartRate: 93
+            bloodPressure:
+              systolic: 126
+              diastolic: 70
+            bloodOxygen: 99.3
+            temperature: 36.8
+            respiratoryRate: 14
+    responses:
+      201:
+        description: A new vitals recording was created for the patient
+        body:
+          application/json:
+            type: PatientRecording
+            examples:
+              example1:
+                id: 23456
+                emergencyResponseId: 50
+                patientId: 52525
+                recorded: 2025-04-22T16:16:11.37233Z
+                source: tablet
+      400:
+        description: Request validation failed
+        body:
+          text/plain:
+            example: Details about the error that occurred
+      500:
+        description: Unexpected error
+        body:
+          text/plain:
+            example: Details about the error that occurred
+  /{id}:
+    uriParameters:
+      id:
+        type: string
+        example: 48310aa2-3665-4d06-a307-e969a9a39c5d
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: PatientRecording
+              properties:
+                vitals: Vitals 
+              examples:
+                vitals1:
+                  id: 4321
+                  emergencyResponseId: 50
+                  patientId: 52525
+                  recorded: 2025-04-22T16:16:11.37233Z
+                  source: tablet
+                  vitals:
+                    heartRate: 93
+                    bloodPressure:
+                      systolic: 126
+                      diastolic: 70
+                    bloodOxygen: 99.3
+                    temperature: 36.8
+                    respiratoryRate: 14
+
+

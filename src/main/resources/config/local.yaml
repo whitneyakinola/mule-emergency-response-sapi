@@ -1,0 +1,5 @@
+db:
+  host: "db-ems.secondssave.com"
+  port: "5432"
+  name: "whitney_db"
+  username: "whitney"
