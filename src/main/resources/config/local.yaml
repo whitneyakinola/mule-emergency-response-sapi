@@ -1,5 +1,5 @@
 db:
-  host: "db-ems.secondssave.com"
+  host: "jdbc:postgresql://db-ems.secondssave.com:5432/whitney_db"
   port: "5432"
   name: "whitney_db"
   username: "whitney"

@@ -1,0 +1,23 @@
+%dw 2.0
+
+type auto_94cbac49_6db3_4684_ace2_6d5db70b0147_Input_Payload = {
+  patientId: Number, 
+  emergencyResponseId: Number, 
+  id?: Number, 
+  source: "tablet" | "manual", 
+  recorded: String, 
+  vitals: {
+    bloodPressure: {
+      systolic: Number, 
+      diastolic: Number, 
+      _?: Any
+    }, 
+    bloodOxygen: Number, 
+    heartRate: Number, 
+    respiratoryRate: Number, 
+    temperature: Number, 
+    _?: Any
+  }, 
+  _?: Any
+}
+

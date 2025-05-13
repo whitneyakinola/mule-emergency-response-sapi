@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<sub-flow name="getEmergencyResponseById" doc:id="d49a0878-5939-47bf-b5ff-3787ab563673" >
+		<db:query-single doc:name="emergency_response" doc:id="ff5320e9-6518-4f66-9471-77a03dad4d37" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * 
+FROM emergency_responses
+WHERE er_id = :id]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id : vars.id
+	
+}]]]></db:input-parameters>
+		</db:query-single>
+		<validation:is-not-null doc:name="payload" doc:id="e16d2322-bd2c-4e10-b0f3-8ad8123685c4" value="#[payload.er_id]" message='#["no record with ID $(vars.id)"]'>
+			<error-mapping sourceType="VALIDATION:NULL" targetType="APP:NOT_FOUND" />
+		</validation:is-not-null>
+		<ee:transform doc:name="response" doc:id="132d76ff-a2b5-4b9f-8a17-0129b7cabc25" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	erId: payload.er_id, 
+    fleetCity: payload.city,
+    patientId: payload.patient_id,
+    emergencyType: payload.emergency_type,
+    priority: payload.priority,
+    status: payload.status,
+    reportedTime: payload.reported_time, 
+    dispatchTime: payload.dispatch_time,
+    arrivalTime: payload.arrival_time,
+    transportStartTime: payload.transport_start_time,
+	transportArrivalTime: payload.transport_arrival_time,
+	locationAddress: payload.location_address,
+	latitude: payload.latitude,
+	longitude: payload.longitude,
+	locationAccuracy: payload.location_accuracy,
+    deviceId: payload.device_id,
+    vehicleId: payload.vehicle_id,
+    destinationFacilityId: payload.destination_facility_id,
+    notes: payload.notes,
+    createdAt: payload.created_at
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

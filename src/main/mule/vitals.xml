@@ -8,14 +8,22 @@
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
 	
-	    <flow name="get:\vitals\(id):emergency-response-system-api-config">
+	    <sub-flow name="getVitals">
         <logger level="INFO" doc:name="INFO" doc:id="0ec8c122-c493-482d-879b-22dd6d4dd948" message="hello world"/>
-		<ee:transform doc:name="Transform Message">
+		<ee:transform doc:name="Transform Message" doc:id="889afb02-e37d-4aff-82f0-9963aa003bdc">
             <ee:variables>
-                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
             </ee:variables>
         </ee:transform>
-        <ee:transform doc:name="Transform Message">
+        <db:query-single doc:name="Query single" doc:id="a13d87d3-6fdc-4738-b18a-8b92a73b9feb" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * 
+FROM vital_signs 
+WHERE id = :id]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id: vars.id
+}]]]></db:input-parameters>
+		</db:query-single>
+		<ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -39,8 +47,8 @@ output application/json
 } as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-    </flow>
-    <flow name="post:\vitals:application\json:emergency-response-system-api-config">
+    </sub-flow>
+    <sub-flow name="createNewVitalSign" doc:id="94cbac49-6db3-4684-ace2-6d5db70b0147">
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -75,7 +83,7 @@ VALUES (
   	:er_id,
     :recorded_at,
     :heart_rate,
-    ::blood_pressure_systolic,
+    :blood_pressure_systolic,
     :blood_pressure_diastolic,
     :blood_oxygen,
     :temperature,
@@ -88,5 +96,5 @@ VALUES (
   );]]></db:sql>
 		</db:insert>
     
-</flow>
+</sub-flow>
 	</mule>

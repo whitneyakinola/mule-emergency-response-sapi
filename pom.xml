@@ -71,6 +71,19 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.7.5</version>
 		</dependency>
+		<dependency>
+			<groupId>7e373f5e-741c-41be-813e-ede4644f9594</groupId>
+			<artifactId>emergency-response-system-api</artifactId>
+			<version>1.0.1</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-validation-module</artifactId>
+			<version>2.0.7</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
 	</dependencies>
 
 	<repositories>
