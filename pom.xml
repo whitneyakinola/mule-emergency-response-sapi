@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.mycompany</groupId>
+	<groupId>7e373f5e-741c-41be-813e-ede4644f9594</groupId>
 	<artifactId>emergency-system-api</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>mule-application</packaging>
 
 	<name>emergency-system-api</name>
@@ -13,8 +13,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<app.runtime>4.9.0</app.runtime>
-		<mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
+		<app.runtime>4.9.4</app.runtime>
+		<mule.maven.plugin.version>4.5.0</mule.maven.plugin.version>
+		<connectedApp.clientId></connectedApp.clientId>
+		<connectedApp.clientSecret></connectedApp.clientSecret>
 	</properties>
 
 	<build>
@@ -36,6 +38,26 @@
 							<artifactId>postgresql</artifactId>
 						</sharedLibrary>
 					</sharedLibraries>
+					<cloudhub2Deployment>
+						<muleVersion>${app.runtime}</muleVersion>
+						<businessGroupId>7e373f5e-741c-41be-813e-ede4644f9594</businessGroupId>
+						<environment>Sandbox</environment>
+						<applicationName>emergency-response-sapi-dev</applicationName>
+						<javaVersion>17</javaVersion>
+						<provider>MC</provider>
+						<target>Cloudhub-US-East-2</target>
+						<vCores>0.2</vCores>
+						<connectedAppClientId>${connectedApp.clientId}</connectedAppClientId>
+						<connectedAppClientSecret>${connectedApp.clientSecret}</connectedAppClientSecret>
+						<connectedAppGrantType>client_credentials</connectedAppGrantType>
+						<properties>
+							<mule.env>dev</mule.env>
+							<anypoint.platform.client_id>${anypoint.platform.client_id}</anypoint.platform.client_id>
+							<anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
+							<db.password>${db.password}</db.password>
+						</properties>
+						<secureProperties></secureProperties>
+					</cloudhub2Deployment>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -72,17 +94,17 @@
 			<version>42.7.5</version>
 		</dependency>
 		<dependency>
-			<groupId>7e373f5e-741c-41be-813e-ede4644f9594</groupId>
-			<artifactId>emergency-response-system-api</artifactId>
-			<version>1.0.1</version>
-			<classifier>raml</classifier>
-			<type>zip</type>
-		</dependency>
-		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-validation-module</artifactId>
 			<version>2.0.7</version>
 			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>7e373f5e-741c-41be-813e-ede4644f9594</groupId>
+			<artifactId>emergency-response-system-api</artifactId>
+			<version>1.1.0</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
 		</dependency>
 	</dependencies>
 
@@ -100,7 +122,14 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
-
+	<distributionManagement>
+		<repository>
+			<id>Repository</id>
+			<name>Corporate Repository</name>
+			<url>https://maven.anypoint.mulesoft.com/api/v3/organizations/7e373f5e-741c-41be-813e-ede4644f9594/maven</url>
+			<layout>default</layout>
+		</repository>
+	</distributionManagement>
 	<pluginRepositories>
 		<pluginRepository>
 			<id>mulesoft-releases</id>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <apikit:config name="emergency-response-system-api-config" api="resource::7e373f5e-741c-41be-813e-ede4644f9594:emergency-response-system-api:1.0.1:raml:zip:emergency-response-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="emergency-response-system-api-config" api="resource::7e373f5e-741c-41be-813e-ede4644f9594:emergency-response-system-api:1.1.0:raml:zip:emergency-response-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="emergency-response-system-api-main">
         <http:listener config-ref="emergency-response-system-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -91,24 +91,24 @@ output application/json
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="9f087c42-61b6-49b7-9a79-5d994a65d794" type="APP:NOT_FOUND">
-				<ee:transform doc:name="Transform Message" doc:id="2ca16055-519d-43d1-80fb-10e6108f3a15" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+            <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="9f087c42-61b6-49b7-9a79-5d994a65d794" type="APP:NOT_FOUND">
+                <ee:transform doc:name="Transform Message" doc:id="2ca16055-519d-43d1-80fb-10e6108f3a15">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
 	message: error.description	
 }]]></ee:set-payload>
-					</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[%dw 2.0
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[%dw 2.0
 output application/java
 ---
 404]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
-			</on-error-propagate>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
         </error-handler>
     </flow>
     <flow name="emergency-response-system-api-console">
@@ -139,35 +139,7 @@ output application/json
         </error-handler>
     </flow>
     <flow name="get:\vitals\(id):emergency-response-system-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  id: 4321,
-  emergencyResponseId: 50,
-  patientId: 52525,
-  recorded: "2025-04-22T16:16:11.37233Z",
-  source: "tablet",
-  vitals: {
-    heartRate: 93,
-    bloodPressure: {
-      systolic: 126,
-      diastolic: 70
-    },
-    bloodOxygen: 99.3,
-    temperature: 36.8,
-    respiratoryRate: 14
-  }
-} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+        <flow-ref doc:name="getVitals" doc:id="4d3d2817-ca5e-4d27-8014-f660a7fee0e1" name="getVitals" />
     </flow>
     <flow name="post:\vitals:application\json:emergency-response-system-api-config">
         <ee:transform doc:name="Transform Message">
@@ -178,10 +150,10 @@ output application/json
 payload]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-		<flow-ref doc:name="createNewVitalSign" doc:id="189072a0-b55e-49f9-8d66-2b791fd7a8f3" name="createNewVitalSign"/>
+        <flow-ref doc:name="createNewVitalSign" doc:id="189072a0-b55e-49f9-8d66-2b791fd7a8f3" name="createNewVitalSign" />
     </flow>
     <flow name="get:\emergencyResponses\(id):emergency-response-system-api-config">
-		<set-variable value="#[attributes.uriParams.id]" doc:name="id" doc:id="c642919b-3d7f-4098-af4a-98a5be11160f" variableName="id"/>
-		<flow-ref doc:name="getEmergencyResponseById" doc:id="8839e244-7ba7-4110-b2b3-98db5666fd01" name="getEmergencyResponseById"/>
+        <set-variable value="#[attributes.uriParams.id]" doc:name="id" doc:id="c642919b-3d7f-4098-af4a-98a5be11160f" variableName="id" />
+        <flow-ref doc:name="getEmergencyResponseById" doc:id="8839e244-7ba7-4110-b2b3-98db5666fd01" name="getEmergencyResponseById" />
     </flow>
 </mule>
