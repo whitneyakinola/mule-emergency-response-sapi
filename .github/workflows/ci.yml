@@ -1,6 +1,5 @@
 name: mulesoft build
 
-
 on:
   push: 
     branches: [master]

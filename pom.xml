@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>7e373f5e-741c-41be-813e-ede4644f9594</groupId>
-	<artifactId>emergency-system-api</artifactId>
-	<version>1.0.0</version>
+	<artifactId>emergency-system-api-impl</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
 
 	<name>emergency-system-api</name>
