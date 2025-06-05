@@ -36,7 +36,27 @@ jobs:
           path: target/*.jar
           if-no-files-found: error     
           retention-days: 10
-          
-          
+  deploy:
+    name: Deploy to CloudHub 2.0
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out the code 
+        uses: actions/checkout@v4
+      - name: setup JDK 17
+        uses: actions/setup-java@v4
+        with: 
+          java-version: "17"
+          distribution: zulu
+          cache: maven 
+      - name: Deploy to CloudHub 2.0
+        run: |      
+          mvn clean deploy -DmuleDeploy \
+            -DconnectedApp.clientId=d814723a56674d829c17ade729c476f0 \
+            -DconnectedApp.clientSecret=248D1a7181e340b2a6De4E4C8E35E47c \
+            -Danypoint.platform.client_id=bec0942115ef481baea26e0d948af8a6 \
+            -Danypoint.platform.client_secret=5d54a9B096364639Ab68ACBd32fc8a83\
+            -Ddb.password
+
     
     
